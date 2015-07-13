@@ -13,7 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 import ntut.edu.lab1323.mitrastar.service.HttpBaseHandler;
 import ntut.edu.lab1323.mitrastar.view.MainActivity;
 
-public class UploadFileHandler extends HttpBaseHandler {
+public class UploadImageFileHandler extends HttpBaseHandler {
 
     @Override
     public void handle(Request request, HttpServletRequest httpRequest, HttpServletResponse httpResponse, final MainActivity activity) throws IOException {

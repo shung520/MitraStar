@@ -14,7 +14,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import ntut.edu.lab1323.mitrastar.service.handler.UploadFileHandler;
+import ntut.edu.lab1323.mitrastar.service.handler.UploadImageFileHandler;
 import ntut.edu.lab1323.mitrastar.view.MainActivity;
 
 public class HttpRouter {
@@ -27,7 +27,7 @@ public class HttpRouter {
 
     private void initHandlers() {
         this.handlers = new HashMap<>();
-        this.handlers.put("/", UploadFileHandler.class);
+        this.handlers.put("/upload/image", UploadImageFileHandler.class);
     }
 
     public Handler createHandler(final MainActivity activity) {
