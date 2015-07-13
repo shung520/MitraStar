@@ -36,6 +36,7 @@ public class HttpRouter {
                                HttpServletRequest httpServletRequest,
                                HttpServletResponse httpServletResponse) throws IOException, ServletException {
                 Log.d(LOG_TAG, target);
+//                Log.e(LOG_TAG, httpServletRequest.getContentType());
 
                 AbstractHandler handler = this.findHandler(target);
                 if (handler != null) {
