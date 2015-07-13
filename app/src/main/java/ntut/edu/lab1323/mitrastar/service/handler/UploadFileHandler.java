@@ -1,33 +1,28 @@
 package ntut.edu.lab1323.mitrastar.service.handler;
 
-import android.util.Log;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 
 import org.eclipse.jetty.server.Request;
-import org.eclipse.jetty.server.handler.AbstractHandler;
 
-import java.io.BufferedReader;
+import java.io.BufferedInputStream;
 import java.io.IOException;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-public class UploadFileHandler extends AbstractHandler {
+import ntut.edu.lab1323.mitrastar.service.HttpBaseHandler;
+
+public class UploadFileHandler extends HttpBaseHandler {
+
     @Override
-    public void handle(String s, Request request, HttpServletRequest httpServletRequest,
-                       HttpServletResponse httpServletResponse) throws IOException, ServletException {
+    public void handle(Request request, HttpServletRequest httpRequest, HttpServletResponse httpResponse) throws IOException {
 
-        StringBuffer jb = new StringBuffer();
-        String line = null;
-        try {
-            BufferedReader reader = request.getReader();
-            while ((line = reader.readLine()) != null)
-                jb.append(line);
-        } catch (Exception e) { /*report an error*/ }
-        Log.d("UploadFileHandler", jb.toString());
+        BufferedInputStream bufferedInputStream = new BufferedInputStream(request.getInputStream());
+        Bitmap bmp = BitmapFactory.decodeStream(bufferedInputStream);
 
-        httpServletResponse.setContentType("text/html");
-        httpServletResponse.setStatus(HttpServletResponse.SC_OK);
-        httpServletResponse.getWriter().println("<h1>Hello World</h1>");
+        httpResponse.setContentType("text/html");
+        httpResponse.setStatus(HttpServletResponse.SC_OK);
+        httpResponse.getWriter().println("<h1>Hello World</h1>");
     }
 }

@@ -18,7 +18,7 @@ import ntut.edu.lab1323.mitrastar.service.handler.UploadFileHandler;
 
 public class HttpRouter {
     static final String LOG_TAG = "HttpRouter";
-    private Map<String, AbstractHandler> handlers;
+    private Map<String, HttpBaseHandler> handlers;
 
     public HttpRouter() {
         this.initHandlers();
@@ -36,21 +36,20 @@ public class HttpRouter {
                                HttpServletRequest httpServletRequest,
                                HttpServletResponse httpServletResponse) throws IOException, ServletException {
                 Log.d(LOG_TAG, target);
-//                Log.e(LOG_TAG, httpServletRequest.getContentType());
 
-                AbstractHandler handler = this.findHandler(target);
-                if (handler != null) {
-                    handler.handle(target, request, httpServletRequest, httpServletResponse);
+                HttpBaseHandler handler = this.findHandler(target);
+                if (handler != null && handler.isAcceptRequestMethod()) {
+                    handler.handle(request, httpServletRequest, httpServletResponse);
 
                 } else {
-                    httpServletResponse.sendError(HttpServletResponse.SC_NOT_FOUND);
+                    httpServletResponse.sendError(HttpServletResponse.SC_NOT_IMPLEMENTED);
 
                 }
 
                 request.setHandled(true);
             }
 
-            private AbstractHandler findHandler(String target) {
+            private HttpBaseHandler findHandler(String target) {
                 for (String key : HttpRouter.this.handlers.keySet()) {
                     if (target.equals(key))
                         return HttpRouter.this.handlers.get(key);
