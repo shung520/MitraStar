@@ -5,7 +5,6 @@ import android.graphics.BitmapFactory;
 
 import org.eclipse.jetty.server.Request;
 
-import java.io.BufferedInputStream;
 import java.io.IOException;
 
 import javax.servlet.http.HttpServletRequest;
@@ -17,11 +16,15 @@ import ntut.edu.lab1323.mitrastar.view.MainActivity;
 public class UploadFileHandler extends HttpBaseHandler {
 
     @Override
-    public void handle(Request request, HttpServletRequest httpRequest, HttpServletResponse httpResponse, MainActivity activity) throws IOException {
+    public void handle(Request request, HttpServletRequest httpRequest, HttpServletResponse httpResponse, final MainActivity activity) throws IOException {
 
-        BufferedInputStream bufferedInputStream = new BufferedInputStream(request.getInputStream());
-        Bitmap bmp = BitmapFactory.decodeStream(bufferedInputStream);
-        activity.showBitmap(bmp);
+        final Bitmap bmp = BitmapFactory.decodeStream(request.getInputStream());
+        activity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                activity.showBitmap(bmp);
+            }
+        });
 
         httpResponse.setStatus(HttpServletResponse.SC_OK);
     }
