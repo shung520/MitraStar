@@ -21,8 +21,6 @@ public class UploadFileHandler extends HttpBaseHandler {
         BufferedInputStream bufferedInputStream = new BufferedInputStream(request.getInputStream());
         Bitmap bmp = BitmapFactory.decodeStream(bufferedInputStream);
 
-        httpResponse.setContentType("text/html");
         httpResponse.setStatus(HttpServletResponse.SC_OK);
-        httpResponse.getWriter().println("<h1>Hello World</h1>");
     }
 }

@@ -18,7 +18,7 @@ import ntut.edu.lab1323.mitrastar.service.handler.UploadFileHandler;
 
 public class HttpRouter {
     static final String LOG_TAG = "HttpRouter";
-    private Map<String, HttpBaseHandler> handlers;
+    private Map<String, Class> handlers;
 
     public HttpRouter() {
         this.initHandlers();
@@ -26,7 +26,7 @@ public class HttpRouter {
 
     private void initHandlers() {
         this.handlers = new HashMap<>();
-        this.handlers.put("/", new UploadFileHandler());
+        this.handlers.put("/", UploadFileHandler.class);
     }
 
     public Handler createHandler() {
@@ -37,7 +37,7 @@ public class HttpRouter {
                                HttpServletResponse httpServletResponse) throws IOException, ServletException {
                 Log.d(LOG_TAG, target);
 
-                HttpBaseHandler handler = this.findHandler(target);
+                HttpBaseHandler handler = HttpRouter.this.findHandler(target);
                 if (handler != null && handler.isAcceptRequestMethod()) {
                     handler.handle(request, httpServletRequest, httpServletResponse);
 
@@ -48,14 +48,26 @@ public class HttpRouter {
 
                 request.setHandled(true);
             }
-
-            private HttpBaseHandler findHandler(String target) {
-                for (String key : HttpRouter.this.handlers.keySet()) {
-                    if (target.equals(key))
-                        return HttpRouter.this.handlers.get(key);
-                }
-                return null;
-            }
         };
+    }
+
+    private HttpBaseHandler findHandler(String target) {
+        for (String key : this.handlers.keySet()) {
+            if (target.equals(key))
+                try {
+                    try {
+                        HttpBaseHandler handler = (HttpBaseHandler) this.handlers.get(key).newInstance();
+                        return handler;
+
+                    } catch (IllegalAccessException e) {
+                        e.printStackTrace();
+
+                    }
+                } catch (InstantiationException e) {
+                    e.printStackTrace();
+
+                }
+        }
+        return null;
     }
 }
