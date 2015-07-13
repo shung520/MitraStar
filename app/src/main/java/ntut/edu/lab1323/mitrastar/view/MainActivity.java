@@ -1,9 +1,11 @@
 package ntut.edu.lab1323.mitrastar.view;
 
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ImageView;
 
 import ntut.edu.lab1323.mitrastar.R;
 import ntut.edu.lab1323.mitrastar.service.HttpServer;
@@ -11,13 +13,15 @@ import ntut.edu.lab1323.mitrastar.service.HttpServer;
 public class MainActivity extends ActionBarActivity {
     static final String LOG_TAG = "MainActivity";
     private HttpServer server;
+    private ImageView testImageView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        this.testImageView = (ImageView) this.findViewById(R.id.test_image_view);
 
-        server = new HttpServer();
+        server = new HttpServer(this);
         server.start();
     }
 
@@ -41,5 +45,11 @@ public class MainActivity extends ActionBarActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    public void showBitmap(Bitmap bmp) {
+        if (bmp != null) {
+            this.testImageView.setImageBitmap(bmp);
+        }
     }
 }

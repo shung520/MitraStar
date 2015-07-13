@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import ntut.edu.lab1323.mitrastar.service.handler.UploadFileHandler;
+import ntut.edu.lab1323.mitrastar.view.MainActivity;
 
 public class HttpRouter {
     static final String LOG_TAG = "HttpRouter";
@@ -29,7 +30,7 @@ public class HttpRouter {
         this.handlers.put("/", UploadFileHandler.class);
     }
 
-    public Handler createHandler() {
+    public Handler createHandler(final MainActivity activity) {
         return new AbstractHandler() {
             public void handle(String target,
                                Request request,
@@ -39,7 +40,7 @@ public class HttpRouter {
 
                 HttpBaseHandler handler = HttpRouter.this.findHandler(target);
                 if (handler != null && handler.isAcceptRequestMethod()) {
-                    handler.handle(request, httpServletRequest, httpServletResponse);
+                    handler.handle(request, httpServletRequest, httpServletResponse, activity);
 
                 } else {
                     httpServletResponse.sendError(HttpServletResponse.SC_NOT_IMPLEMENTED);
