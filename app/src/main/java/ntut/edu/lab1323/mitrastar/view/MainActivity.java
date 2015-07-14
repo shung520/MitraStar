@@ -1,11 +1,14 @@
 package ntut.edu.lab1323.mitrastar.view;
 
 import android.graphics.Bitmap;
+import android.net.Uri;
+import android.widget.MediaController;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageView;
+import android.widget.VideoView;
 
 import ntut.edu.lab1323.mitrastar.R;
 import ntut.edu.lab1323.mitrastar.service.HttpServer;
@@ -14,15 +17,26 @@ public class MainActivity extends ActionBarActivity {
     static final String LOG_TAG = "MainActivity";
     private HttpServer server;
     private ImageView testImageView;
+    private VideoView testVideoView;
+    private MediaController mc;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         this.testImageView = (ImageView) this.findViewById(R.id.test_image_view);
+        this.testVideoView = (VideoView) this.findViewById(R.id.test_video_view);
+        this.mc = new MediaController(this);
+        this.testVideoView.setMediaController(this.mc);
+
+        this.testVideoView.setVideoURI(Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.test));
 
         server = new HttpServer(this);
         server.start();
+
+        this.testVideoView.requestFocus();
+        this.testVideoView.start();
+
     }
 
     @Override
