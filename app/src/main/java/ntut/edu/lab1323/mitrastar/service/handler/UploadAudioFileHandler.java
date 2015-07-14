@@ -1,13 +1,15 @@
 package ntut.edu.lab1323.mitrastar.service.handler;
 
-import android.media.AudioFormat;
-import android.media.AudioManager;
-import android.media.AudioTrack;
+import android.media.MediaPlayer;
 
 import org.eclipse.jetty.server.Request;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Calendar;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -19,17 +21,44 @@ import ntut.edu.lab1323.mitrastar.view.MainActivity;
 public class UploadAudioFileHandler extends HttpBaseHandler {
 
     @Override
-    public void handle(Request request, HttpServletRequest httpRequest, HttpServletResponse httpResponse, MainActivity activity) throws IOException {
-        InputStream input = request.getInputStream();
-        int bufferSize = AudioTrack.getMinBufferSize(44100, AudioFormat.CHANNEL_CONFIGURATION_MONO, AudioFormat.ENCODING_PCM_16BIT);
-        AudioTrack audioTrack = new AudioTrack(AudioManager.STREAM_MUSIC, 44100, AudioFormat.CHANNEL_CONFIGURATION_MONO, AudioFormat.ENCODING_PCM_16BIT, bufferSize, AudioTrack.MODE_STREAM);
-        audioTrack.play();
+    public void handle(final Request request, HttpServletRequest httpRequest, HttpServletResponse httpResponse, MainActivity activity) throws IOException {
+        final InputStream input = request.getInputStream();
 
-        byte[] bytes = new byte[1000];
+        Calendar calendar = Calendar.getInstance();
+        final File tempFile = File.createTempFile(Long.toString(calendar.getTime().getTime()), "");
+        tempFile.deleteOnExit();
+        FileOutputStream fos = new FileOutputStream(tempFile);
+
         int length;
-        while ((length = input.read(bytes)) >= 0) {
-            audioTrack.write(bytes, 0, length);
+        try {
+            while (true) {
+                byte[] bytes = new byte[1000];
+                length = input.read(bytes);
+                if (length < 0)
+                    break;
+
+                fos.write(bytes, 0, length);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
+        fos.close();
+
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    MediaPlayer mediaPlayer = new MediaPlayer();
+                    FileInputStream fis = new FileInputStream(tempFile);
+                    mediaPlayer.setDataSource(fis.getFD());
+                    mediaPlayer.prepare();
+                    mediaPlayer.start();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        thread.start();
 
         httpResponse.setStatus(HttpServletResponse.SC_OK);
     }
