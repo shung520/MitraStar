@@ -1,6 +1,7 @@
 package ntut.edu.lab1323.mitrastar.service.handler;
 
 import android.media.MediaPlayer;
+import android.util.Log;
 
 import org.eclipse.jetty.server.Request;
 
@@ -25,8 +26,8 @@ public class UploadAudioFileHandler extends HttpBaseHandler {
         final InputStream input = request.getInputStream();
 
         Calendar calendar = Calendar.getInstance();
-        final File tempFile = File.createTempFile(Long.toString(calendar.getTime().getTime()), "");
-        tempFile.deleteOnExit();
+        File outputDir = activity.getCacheDir();
+        final File tempFile = File.createTempFile(Long.toString(calendar.getTime().getTime()), ".audio", outputDir);
         FileOutputStream fos = new FileOutputStream(tempFile);
 
         int length;
@@ -36,11 +37,13 @@ public class UploadAudioFileHandler extends HttpBaseHandler {
                 length = input.read(bytes);
                 if (length < 0)
                     break;
-
+                
                 fos.write(bytes, 0, length);
+
             }
         } catch (IOException e) {
             e.printStackTrace();
+
         }
         fos.close();
 
@@ -49,12 +52,17 @@ public class UploadAudioFileHandler extends HttpBaseHandler {
             public void run() {
                 try {
                     MediaPlayer mediaPlayer = new MediaPlayer();
+
                     FileInputStream fis = new FileInputStream(tempFile);
+                    Log.d("UploadAudioFileHandler", "delete " + tempFile.getName() + " -> " + Boolean.toString(tempFile.delete()));
+
                     mediaPlayer.setDataSource(fis.getFD());
                     mediaPlayer.prepare();
                     mediaPlayer.start();
+
                 } catch (IOException e) {
                     e.printStackTrace();
+
                 }
             }
         });
