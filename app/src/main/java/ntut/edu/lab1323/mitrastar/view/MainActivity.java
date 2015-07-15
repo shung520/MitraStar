@@ -2,6 +2,7 @@ package ntut.edu.lab1323.mitrastar.view;
 
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.util.Log;
 import android.widget.MediaController;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
@@ -67,5 +68,6 @@ public class MainActivity extends ActionBarActivity {
         this.testVideoView.setVideoPath(file.getPath());
         this.testVideoView.requestFocus();
         this.testVideoView.start();
+        Log.d("UploadAudioFileHandler", "delete " + file.getName() + " -> " + Boolean.toString(file.delete()));
     }
 }
