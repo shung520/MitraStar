@@ -16,6 +16,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import ntut.edu.lab1323.mitrastar.service.handler.UploadAudioFileHandler;
 import ntut.edu.lab1323.mitrastar.service.handler.UploadImageFileHandler;
+import ntut.edu.lab1323.mitrastar.service.handler.UploadVideoFileHandler;
 import ntut.edu.lab1323.mitrastar.view.MainActivity;
 
 public class HttpRouter {
@@ -30,6 +31,7 @@ public class HttpRouter {
         this.handlers = new HashMap<>();
         this.handlers.put("/upload/image", UploadImageFileHandler.class);
         this.handlers.put("/upload/audio", UploadAudioFileHandler.class);
+        this.handlers.put("/upload/video", UploadVideoFileHandler.class);
     }
 
     public Handler createHandler(final MainActivity activity) {

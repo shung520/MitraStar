@@ -10,6 +10,8 @@ import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.VideoView;
 
+import java.io.File;
+
 import ntut.edu.lab1323.mitrastar.R;
 import ntut.edu.lab1323.mitrastar.service.HttpServer;
 
@@ -28,14 +30,8 @@ public class MainActivity extends ActionBarActivity {
         this.testVideoView = (VideoView) this.findViewById(R.id.test_video_view);
         this.mc = new MediaController(this);
         this.testVideoView.setMediaController(this.mc);
-
-        this.testVideoView.setVideoURI(Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.test));
-
         server = new HttpServer(this);
         server.start();
-
-        this.testVideoView.requestFocus();
-        this.testVideoView.start();
 
     }
 
@@ -65,5 +61,11 @@ public class MainActivity extends ActionBarActivity {
         if (bmp != null) {
             this.testImageView.setImageBitmap(bmp);
         }
+    }
+
+    public void showVideo(File file) {
+        this.testVideoView.setVideoPath(file.getPath());
+        this.testVideoView.requestFocus();
+        this.testVideoView.start();
     }
 }

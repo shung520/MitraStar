@@ -28,9 +28,9 @@ public class UploadAudioFileHandler extends HttpBaseHandler {
         FileOutputStream fos = new FileOutputStream(tempFile);
 
         int length;
+        byte[] bytes = new byte[1000];
         try {
             while (true) {
-                byte[] bytes = new byte[1000];
                 length = input.read(bytes);
                 if (length < 0)
                     break;
