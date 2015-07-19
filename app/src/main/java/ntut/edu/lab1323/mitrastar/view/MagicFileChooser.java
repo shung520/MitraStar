@@ -81,7 +81,7 @@ public class MagicFileChooser {
                 Uri uri = data.getData();
                 if (uri != null) {
                     // ³æ¿ï
-                    chosenFiles = getFilesFromUris(activity, new Uri[] { uri }, mustCanRead);
+                    chosenFiles = getFilesFromUris(activity, new Uri[]{uri}, mustCanRead);
                     return true;
                 } else if (Build.VERSION.SDK_INT >= 16) {
                     // ½Æ¿ï
@@ -241,7 +241,7 @@ public class MagicFileChooser {
     }
 
     public static String queryAbsolutePath(final Context context, final Uri uri) {
-        final String[] projection = { MediaStore.MediaColumns.DATA };
+        final String[] projection = {MediaStore.MediaColumns.DATA};
         Cursor cursor = null;
         try {
             cursor = context.getContentResolver().query(uri, projection, null, null, null);
