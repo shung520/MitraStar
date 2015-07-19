@@ -1,7 +1,6 @@
 package ntut.edu.lab1323.mitrastar.service.handler;
 
 
-
 import android.net.Uri;
 
 import org.eclipse.jetty.server.Request;
@@ -27,29 +26,23 @@ public class DownloadFileHandler extends HttpBaseHandler {
     @Override
     public void handle(Request request, HttpServletRequest httpRequest, HttpServletResponse httpResponse, MainActivity activity) throws IOException {
 
-        File file = new File(URI.create("android.resource://" + activity.getPackageName() + "/" + R.drawable.test));
+        File file = new File("/storage/emulated/0/DCIM/100MEDIA/IMAG2201.jpg");
         ServletOutputStream ous = null;
         InputStream ios = null;
 
         try {
             byte[] buffer = new byte[4096];
-            ous = httpResponse.getOutputStream() ;
+            ous = httpResponse.getOutputStream();
             ios = new FileInputStream(file);
             int read = 0;
-            while ( (read = ios.read(buffer)) != -1 ) {
+            while ((read = ios.read(buffer)) != -1) {
                 ous.write(buffer, 0, read);
             }
         } finally {
             try {
-                if ( ous != null )
-                    ous.close();
-            } catch ( IOException e) {
-            }
-
-            try {
-                if ( ios != null )
+                if (ios != null)
                     ios.close();
-            } catch ( IOException e) {
+            } catch (IOException e) {
             }
         }
     }
