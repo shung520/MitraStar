@@ -1,5 +1,6 @@
 package ntut.edu.lab1323.mitrastar.view;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.util.Log;
@@ -22,6 +23,7 @@ public class MainActivity extends ActionBarActivity {
     private ImageView testImageView;
     private VideoView testVideoView;
     private MediaController mc;
+    private MagicFileChooser chooser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,6 +36,8 @@ public class MainActivity extends ActionBarActivity {
         server = new HttpServer(this);
         server.start();
 
+        this.chooser = new MagicFileChooser(this);
+        this.chooser.showFileChooser("*/*", null, true);
     }
 
     @Override
@@ -56,6 +60,15 @@ public class MainActivity extends ActionBarActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (this.chooser.onActivityResult(requestCode, resultCode, data)) {
+            for (File file : this.chooser.getChosenFiles()) {
+                Log.e("MainActivity", file.getPath());
+            }
+        }
     }
 
     public void showBitmap(Bitmap bmp) {
