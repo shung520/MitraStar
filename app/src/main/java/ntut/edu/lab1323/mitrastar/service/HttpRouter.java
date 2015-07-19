@@ -14,6 +14,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import ntut.edu.lab1323.mitrastar.service.handler.DownloadFileHandler;
 import ntut.edu.lab1323.mitrastar.service.handler.UploadAudioFileHandler;
 import ntut.edu.lab1323.mitrastar.service.handler.UploadImageFileHandler;
 import ntut.edu.lab1323.mitrastar.service.handler.UploadVideoFileHandler;
@@ -32,6 +33,7 @@ public class HttpRouter {
         this.handlers.put("/upload/image", UploadImageFileHandler.class);
         this.handlers.put("/upload/audio", UploadAudioFileHandler.class);
         this.handlers.put("/upload/video", UploadVideoFileHandler.class);
+        this.handlers.put("/download", DownloadFileHandler.class);
     }
 
     public Handler createHandler(final MainActivity activity) {
