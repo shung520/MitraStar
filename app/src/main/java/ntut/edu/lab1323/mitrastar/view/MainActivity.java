@@ -10,10 +10,12 @@ import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageView;
+import android.widget.Toast;
 import android.widget.VideoView;
 
 import java.io.File;
 
+import de.greenrobot.event.EventBus;
 import ntut.edu.lab1323.mitrastar.R;
 import ntut.edu.lab1323.mitrastar.service.HttpServer;
 
@@ -82,5 +84,26 @@ public class MainActivity extends ActionBarActivity {
         this.testVideoView.requestFocus();
         this.testVideoView.start();
         Log.d("UploadAudioFileHandler", "delete " + file.getName() + " -> " + Boolean.toString(file.delete()));
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        EventBus.getDefault().unregister(this);
+    }
+
+    public void onEvent(UploadMessageEvent event){
+        Log.d("UploadVideoFileHandler", "onEvent");
+        File file = event.getTempFile();
+        this.testVideoView.setVideoPath(file.getPath());
+        this.testVideoView.requestFocus();
+        this.testVideoView.start();
+        Log.d("UploadVideoFileHandler", "delete " + file.getName() + " -> " + Boolean.toString(file.delete()));
     }
 }

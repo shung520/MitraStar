@@ -11,9 +11,11 @@ import java.util.Calendar;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import de.greenrobot.event.EventBus;
 import ntut.edu.lab1323.mitrastar.service.HttpBaseHandler;
 import ntut.edu.lab1323.mitrastar.service.task.PlayAudioTask;
 import ntut.edu.lab1323.mitrastar.view.MainActivity;
+import ntut.edu.lab1323.mitrastar.view.UploadMessageEvent;
 
 public class UploadVideoFileHandler extends HttpBaseHandler {
     @Override
@@ -43,7 +45,7 @@ public class UploadVideoFileHandler extends HttpBaseHandler {
         activity.runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                activity.showVideo(tempFile);
+                EventBus.getDefault().post(new UploadMessageEvent(tempFile));
             }
         });
 
