@@ -1,16 +1,13 @@
 package ntut.edu.lab1323.mitrastar.view;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.net.Uri;
-import android.util.Log;
-import android.widget.MediaController;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageView;
-import android.widget.Toast;
+import android.widget.MediaController;
 import android.widget.VideoView;
 
 import java.io.File;
@@ -21,6 +18,7 @@ import ntut.edu.lab1323.mitrastar.service.HttpServer;
 
 public class MainActivity extends ActionBarActivity {
     static final String LOG_TAG = "MainActivity";
+
     private HttpServer server;
     private ImageView testImageView;
     private VideoView testVideoView;
@@ -30,13 +28,13 @@ public class MainActivity extends ActionBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        this.setContentView(R.layout.activity_main);
         this.testImageView = (ImageView) this.findViewById(R.id.test_image_view);
         this.testVideoView = (VideoView) this.findViewById(R.id.test_video_view);
         this.mc = new MediaController(this);
         this.testVideoView.setMediaController(this.mc);
-        server = new HttpServer(this);
-        server.start();
+        this.server = new HttpServer(this);
+        this.server.start();
 
         this.chooser = new MagicFileChooser(this);
         this.chooser.showFileChooser("*/*", null, true);
@@ -68,22 +66,9 @@ public class MainActivity extends ActionBarActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (this.chooser.onActivityResult(requestCode, resultCode, data)) {
             for (File file : this.chooser.getChosenFiles()) {
-                Log.e("MainActivity", file.getPath());
+                Log.e(LOG_TAG, file.getPath());
             }
         }
-    }
-
-    public void showBitmap(Bitmap bmp) {
-        if (bmp != null) {
-            this.testImageView.setImageBitmap(bmp);
-        }
-    }
-
-    public void showVideo(File file) {
-        this.testVideoView.setVideoPath(file.getPath());
-        this.testVideoView.requestFocus();
-        this.testVideoView.start();
-        Log.d("UploadAudioFileHandler", "delete " + file.getName() + " -> " + Boolean.toString(file.delete()));
     }
 
     @Override
@@ -98,12 +83,15 @@ public class MainActivity extends ActionBarActivity {
         EventBus.getDefault().unregister(this);
     }
 
-    public void onEvent(UploadMessageEvent event){
-        Log.d("UploadVideoFileHandler", "onEvent");
+    @SuppressWarnings("unused")
+    public void onEventMainThread(UploadMessageEvent event) {
+        Log.d(LOG_TAG, "onEvent");
+
         File file = event.getTempFile();
         this.testVideoView.setVideoPath(file.getPath());
         this.testVideoView.requestFocus();
         this.testVideoView.start();
-        Log.d("UploadVideoFileHandler", "delete " + file.getName() + " -> " + Boolean.toString(file.delete()));
+
+        Log.d(LOG_TAG, "delete " + file.getName() + " -> " + Boolean.toString(file.delete()));
     }
 }

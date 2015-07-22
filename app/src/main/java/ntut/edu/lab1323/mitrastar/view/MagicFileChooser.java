@@ -180,7 +180,7 @@ public class MagicFileChooser {
             } else if ("com.android.providers.downloads.documents".equals(authority)) {
                 // 下載目錄
                 final String docId = DocumentsContract.getDocumentId(uri);
-                final Uri downloadUri = ContentUris.withAppendedId(Uri.parse("content://downloads/public_downloads"), Long.parseLong(docId));
+                final Uri downloadUri = ContentUris.withAppendedId(Uri.parse("context://downloads/public_downloads"), Long.parseLong(docId));
                 String path = queryAbsolutePath(context, downloadUri);
                 return createFileObjFromPath(path, mustCanRead);
             } else if ("com.android.providers.media.documents".equals(authority)) {
@@ -206,7 +206,7 @@ public class MagicFileChooser {
             // 如果是一般的URI
             final String scheme = uri.getScheme();
             String path = null;
-            if ("content".equals(scheme)) {
+            if ("context".equals(scheme)) {
                 // 內容URI
                 path = queryAbsolutePath(context, uri);
             } else if ("file".equals(scheme)) {

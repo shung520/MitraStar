@@ -13,17 +13,15 @@ import javax.servlet.http.HttpServletResponse;
 
 import de.greenrobot.event.EventBus;
 import ntut.edu.lab1323.mitrastar.service.HttpBaseHandler;
-import ntut.edu.lab1323.mitrastar.service.task.PlayAudioTask;
-import ntut.edu.lab1323.mitrastar.view.MainActivity;
 import ntut.edu.lab1323.mitrastar.view.UploadMessageEvent;
 
 public class UploadVideoFileHandler extends HttpBaseHandler {
     @Override
-    public void handle(Request request, HttpServletRequest httpRequest, HttpServletResponse httpResponse, final MainActivity activity) throws IOException {
+    public void handle(Request request, HttpServletRequest httpRequest, HttpServletResponse httpResponse) throws IOException {
         InputStream input = request.getInputStream();
 
         Calendar calendar = Calendar.getInstance();
-        File outputDir = activity.getCacheDir();
+        File outputDir = this.context.getCacheDir();
         final File tempFile = File.createTempFile(Long.toString(calendar.getTime().getTime()), ".video", outputDir);
         FileOutputStream fos = new FileOutputStream(tempFile);
 
@@ -42,12 +40,7 @@ public class UploadVideoFileHandler extends HttpBaseHandler {
         }
         fos.close();
 
-        activity.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                EventBus.getDefault().post(new UploadMessageEvent(tempFile));
-            }
-        });
+        EventBus.getDefault().post(new UploadMessageEvent(tempFile));
 
         httpResponse.setStatus(HttpServletResponse.SC_OK);
     }

@@ -1,5 +1,6 @@
 package ntut.edu.lab1323.mitrastar.service;
 
+import android.content.Context;
 import android.util.Log;
 
 import org.eclipse.jetty.server.Handler;
@@ -15,28 +16,26 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import ntut.edu.lab1323.mitrastar.service.handler.DownloadFileHandler;
-import ntut.edu.lab1323.mitrastar.service.handler.UploadAudioFileHandler;
-import ntut.edu.lab1323.mitrastar.service.handler.UploadImageFileHandler;
 import ntut.edu.lab1323.mitrastar.service.handler.UploadVideoFileHandler;
-import ntut.edu.lab1323.mitrastar.view.MainActivity;
 
 public class HttpRouter {
     static final String LOG_TAG = "HttpRouter";
     private Map<String, Class> handlers;
+    private Context context;
 
-    public HttpRouter() {
+    public HttpRouter(Context context) {
         this.initHandlers();
+
+        this.context = context;
     }
 
     private void initHandlers() {
         this.handlers = new HashMap<>();
-        this.handlers.put("/upload/image", UploadImageFileHandler.class);
-        this.handlers.put("/upload/audio", UploadAudioFileHandler.class);
         this.handlers.put("/upload/video", UploadVideoFileHandler.class);
         this.handlers.put("/download", DownloadFileHandler.class);
     }
 
-    public Handler createHandler(final MainActivity activity) {
+    public Handler createHandler() {
         return new AbstractHandler() {
             public void handle(String target,
                                Request request,
@@ -46,7 +45,7 @@ public class HttpRouter {
 
                 HttpBaseHandler handler = HttpRouter.this.findHandler(target);
                 if (handler != null && handler.isAcceptRequestMethod()) {
-                    handler.handle(request, httpServletRequest, httpServletResponse, activity);
+                    handler.handle(request, httpServletRequest, httpServletResponse);
 
                 } else {
                     httpServletResponse.sendError(HttpServletResponse.SC_NOT_IMPLEMENTED);
@@ -64,6 +63,7 @@ public class HttpRouter {
                 try {
                     try {
                         HttpBaseHandler handler = (HttpBaseHandler) this.handlers.get(key).newInstance();
+                        handler.setContext(this.context);
                         return handler;
 
                     } catch (IllegalAccessException e) {
