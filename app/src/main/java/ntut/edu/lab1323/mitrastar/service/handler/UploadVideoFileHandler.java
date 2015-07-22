@@ -13,7 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import de.greenrobot.event.EventBus;
 import ntut.edu.lab1323.mitrastar.service.HttpBaseHandler;
-import ntut.edu.lab1323.mitrastar.view.UploadMessageEvent;
+import ntut.edu.lab1323.mitrastar.view.event.UploadMessageEvent;
 
 public class UploadVideoFileHandler extends HttpBaseHandler {
     @Override

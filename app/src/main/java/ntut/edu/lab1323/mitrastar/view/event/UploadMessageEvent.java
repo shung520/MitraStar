@@ -1,4 +1,4 @@
-package ntut.edu.lab1323.mitrastar.view;
+package ntut.edu.lab1323.mitrastar.view.event;
 
 import java.io.File;
 
