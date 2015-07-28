@@ -20,7 +20,6 @@ import android.media.MediaCodec;
 import android.media.UnsupportedSchemeException;
 import android.os.Handler;
 import android.util.Pair;
-import android.widget.TextView;
 
 import com.google.android.exoplayer.DefaultLoadControl;
 import com.google.android.exoplayer.LoadControl;
@@ -85,19 +84,17 @@ public class DashRendererBuilder implements RendererBuilder, ManifestCallback<Me
     private final String url;
     private final String contentId;
     private final MediaDrmCallback drmCallback;
-    private final TextView debugTextView;
 
     private DemoPlayer player;
     private RendererBuilderCallback callback;
     private ManifestFetcher<MediaPresentationDescription> manifestFetcher;
 
     public DashRendererBuilder(String userAgent, String url, String contentId,
-                               MediaDrmCallback drmCallback, TextView debugTextView) {
+                               MediaDrmCallback drmCallback) {
         this.userAgent = userAgent;
         this.url = url;
         this.contentId = contentId;
         this.drmCallback = drmCallback;
-        this.debugTextView = debugTextView;
     }
 
     @Override
@@ -207,8 +204,6 @@ public class DashRendererBuilder implements RendererBuilder, ManifestCallback<Me
                     DemoPlayer.TYPE_VIDEO);
             videoRenderer = new MediaCodecVideoTrackRenderer(videoSampleSource, drmSessionManager, true,
                     MediaCodec.VIDEO_SCALING_MODE_SCALE_TO_FIT, 5000, null, mainHandler, player, 50);
-            debugRenderer = debugTextView != null
-                    ? new DebugTrackRenderer(debugTextView, videoRenderer, videoSampleSource) : null;  /*20150504 lab1323j*/
         }
 
         // Build the audio chunk sources.
@@ -309,7 +304,6 @@ public class DashRendererBuilder implements RendererBuilder, ManifestCallback<Me
         renderers[DemoPlayer.TYPE_VIDEO] = videoRenderer;
         renderers[DemoPlayer.TYPE_AUDIO] = audioRenderer;
         renderers[DemoPlayer.TYPE_TEXT] = textRenderer;
-        renderers[DemoPlayer.TYPE_DEBUG] = debugRenderer;
         callback.onRenderers(trackNames, multiTrackChunkSources, renderers);
     }
 

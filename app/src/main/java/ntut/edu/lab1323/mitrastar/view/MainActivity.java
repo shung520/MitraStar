@@ -2,6 +2,7 @@ package ntut.edu.lab1323.mitrastar.view;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.MediaController;
@@ -13,14 +14,21 @@ import de.greenrobot.event.EventBus;
 import ntut.edu.lab1323.mitrastar.R;
 import ntut.edu.lab1323.mitrastar.service.HttpServer;
 import ntut.edu.lab1323.mitrastar.view.component.MagicFileChooser;
+import ntut.edu.lab1323.mitrastar.view.component.player.DashRendererBuilder;
+import ntut.edu.lab1323.mitrastar.view.component.player.DemoPlayer;
+import ntut.edu.lab1323.mitrastar.view.component.player.DemoPlayer.RendererBuilder;
+import ntut.edu.lab1323.mitrastar.view.component.player.DemoUtil;
+import ntut.edu.lab1323.mitrastar.view.component.player.WidevineTestMediaDrmCallback;
 import ntut.edu.lab1323.mitrastar.view.event.UploadMessageEvent;
 
 public class MainActivity extends Activity {
     static final String LOG_TAG = "MainActivity";
 
-    private HttpServer server;
     private VideoView videoView;
+
+    private HttpServer server;
     private MagicFileChooser chooser;
+    private DemoPlayer player;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,9 +54,18 @@ public class MainActivity extends Activity {
     }
 
     private void initVideoView() {
+        String url = "140.124.182.80/player/dash130/index2.html?url=http://140.124.182.80/dashcontent/qp20/bigbuckbunnyanimation15fps/_video/240p0kbit/bigbuckbunnyanimation15fps_0kbit_dash.mpd";
+        this.player = new DemoPlayer(this.getRendererBuilder("test", Uri.parse(url)));
+
         MediaController mediaController = new MediaController(this);
         this.videoView = (VideoView) this.findViewById(R.id.video_view);
         this.videoView.setMediaController(mediaController);
+    }
+
+    private RendererBuilder getRendererBuilder(String contentId, Uri contentUri) {
+        String userAgent = DemoUtil.getUserAgent(this);
+        return new DashRendererBuilder(userAgent, contentUri.toString(), contentId,
+                new WidevineTestMediaDrmCallback(contentId));
     }
 
     @Override
