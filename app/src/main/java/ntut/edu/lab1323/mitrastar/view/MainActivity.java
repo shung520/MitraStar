@@ -14,6 +14,7 @@ import android.view.SurfaceHolder;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.accessibility.CaptioningManager;
+import android.widget.Button;
 import android.widget.MediaController;
 
 import com.google.android.exoplayer.ExoPlayer;
@@ -29,6 +30,7 @@ import java.util.Map;
 import de.greenrobot.event.EventBus;
 import ntut.edu.lab1323.mitrastar.R;
 import ntut.edu.lab1323.mitrastar.service.HttpServer;
+import ntut.edu.lab1323.mitrastar.service.socket.UDPClient;
 import ntut.edu.lab1323.mitrastar.view.component.MagicFileChooser;
 import ntut.edu.lab1323.mitrastar.view.component.player.DashRendererBuilder;
 import ntut.edu.lab1323.mitrastar.view.component.player.DemoPlayer;
@@ -49,6 +51,7 @@ public class MainActivity extends Activity implements SurfaceHolder.Callback, De
     private boolean playerNeedsPrepare;
     private VideoSurfaceView surfaceView;
     private SubtitleView subtitleView;
+    private Button chooseFileButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,6 +61,9 @@ public class MainActivity extends Activity implements SurfaceHolder.Callback, De
         this.initVideoView();
         this.initLocalServer();
         this.initChooser();
+        UDPClient udpClient = new UDPClient("192.168.1.102",8000);
+        udpClient.sendMessage("keming hi!");
+
     }
 
     @Override
@@ -65,15 +71,21 @@ public class MainActivity extends Activity implements SurfaceHolder.Callback, De
         super.onResume();
 
         this.configureSubtitleView();
-//        if (this.player != null) {
-//            this.player.setBackgrounded(false);
-//        }
+        if (this.player != null) {
+            this.player.setBackgrounded(false);
+        }
     }
 
     private void initChooser() {
         this.chooser = new MagicFileChooser(this);
+        this.chooseFileButton = (Button) findViewById(R.id.choose_file_button);
+        this.chooseFileButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                MainActivity.this.showFileChooser();
+            }
+        });
     }
-
     private void showFileChooser() {
         this.chooser.showFileChooser("*/*", null, true);
     }
@@ -121,6 +133,7 @@ public class MainActivity extends Activity implements SurfaceHolder.Callback, De
         if (this.chooser.onActivityResult(requestCode, resultCode, data)) {
             for (File file : this.chooser.getChosenFiles()) {
                 Log.e(LOG_TAG, file.getPath());
+
             }
         }
     }
