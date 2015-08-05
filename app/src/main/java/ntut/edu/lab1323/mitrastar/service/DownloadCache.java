@@ -30,7 +30,7 @@ public class DownloadCache {
     }
 
     public File getFile(String key) {
-        if (this.fileMap.containsKey(key)) {
+        if (key != null && this.fileMap.containsKey(key)) {
             return this.fileMap.get(key);
         }
         return null;

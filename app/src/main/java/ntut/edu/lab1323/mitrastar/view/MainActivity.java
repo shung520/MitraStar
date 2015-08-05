@@ -29,6 +29,7 @@ import java.util.Map;
 
 import de.greenrobot.event.EventBus;
 import ntut.edu.lab1323.mitrastar.R;
+import ntut.edu.lab1323.mitrastar.service.DownloadCache;
 import ntut.edu.lab1323.mitrastar.service.HttpServer;
 import ntut.edu.lab1323.mitrastar.service.socket.UDPClient;
 import ntut.edu.lab1323.mitrastar.view.component.MagicFileChooser;
@@ -133,7 +134,7 @@ public class MainActivity extends Activity implements SurfaceHolder.Callback, De
         if (this.chooser.onActivityResult(requestCode, resultCode, data)) {
             for (File file : this.chooser.getChosenFiles()) {
                 Log.e(LOG_TAG, file.getPath());
-
+                DownloadCache.getInstance().addFile(file);
             }
         }
     }

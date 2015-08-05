@@ -12,13 +12,22 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import ntut.edu.lab1323.mitrastar.service.DownloadCache;
 import ntut.edu.lab1323.mitrastar.service.HttpBaseHandler;
 
 
 public class DownloadFileHandler extends HttpBaseHandler {
+
     @Override
     public void handle(Request request, HttpServletRequest httpRequest, HttpServletResponse httpResponse) throws IOException {
-        File file = new File("/storage/emulated/0/DCIM/100MEDIA/IMAG2201.jpg");
+        String key = request.getParameter("key");
+        File file = DownloadCache.getInstance().getFile(key);
+
+        if (file == null) {
+            httpResponse.setStatus(HttpServletResponse.SC_NOT_FOUND);
+            return;
+        }
+
         ServletOutputStream outputStream = httpResponse.getOutputStream();
         InputStream inputStream = null;
 
