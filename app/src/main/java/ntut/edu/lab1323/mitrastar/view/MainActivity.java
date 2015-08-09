@@ -53,6 +53,7 @@ public class MainActivity extends Activity implements SurfaceHolder.Callback, De
     private VideoSurfaceView surfaceView;
     private SubtitleView subtitleView;
     private Button chooseFileButton;
+    private UDPClient udpClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,9 +63,9 @@ public class MainActivity extends Activity implements SurfaceHolder.Callback, De
         this.initVideoView();
         this.initLocalServer();
         this.initChooser();
-        UDPClient udpClient = new UDPClient("192.168.1.102",8000);
-        udpClient.sendMessage("keming hi!");
 
+        this.udpClient = new UDPClient("192.168.1.234", 8000);
+        this.udpClient.sendMessage("keming hi!");
     }
 
     @Override
@@ -87,6 +88,7 @@ public class MainActivity extends Activity implements SurfaceHolder.Callback, De
             }
         });
     }
+
     private void showFileChooser() {
         this.chooser.showFileChooser("*/*", null, true);
     }
@@ -134,7 +136,10 @@ public class MainActivity extends Activity implements SurfaceHolder.Callback, De
         if (this.chooser.onActivityResult(requestCode, resultCode, data)) {
             for (File file : this.chooser.getChosenFiles()) {
                 Log.e(LOG_TAG, file.getPath());
-                DownloadCache.getInstance().addFile(file);
+
+                String key;
+                key = DownloadCache.getInstance().addFile(file);
+                this.udpClient.sendMessage(key);
             }
         }
     }

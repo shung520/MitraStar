@@ -41,8 +41,10 @@ public class DownloadFileHandler extends HttpBaseHandler {
             }
         } finally {
             try {
-                if (inputStream != null)
+                if (inputStream != null) {
                     inputStream.close();
+                    DownloadCache.getInstance().deleteFile(key);
+                }
 
             } catch (IOException e) {
                 e.printStackTrace();

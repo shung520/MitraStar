@@ -43,4 +43,10 @@ public class DownloadCache {
         Log.e("Create Key", key);
         return key;
     }
+
+    public void deleteFile(String key) {
+        if (key != null && this.fileMap.containsKey(key)) {
+            this.fileMap.remove(key);
+        }
+    }
 }
