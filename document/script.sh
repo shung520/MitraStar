@@ -1,10 +1,27 @@
 #!/bin/sh
 
-ffmpeg -ss 00:00:00.000 -i model.ts -t 01:00:00.000 -c:v copy -c:a copy out.ts
-ffmpeg -i out.ts -acodec copy -vcodec copy out.mp4
+# define variable
+video_filename=$1
+temp_ts_filename=temp_out.ts
+temp_mp4_filename=temp_out.mp4
+split_video_minuts=5
 
-for var in {0..11}
+# get video duration
+video_duration=$(ffmpeg -i $video_filename 2>&1 | grep "Duration"| cut -d ' ' -f 4 | sed s/,//)
+
+# convert ts to mp4
+ffmpeg -y -ss 00:00:00.00 -i $video_filename -t $video_duration -c:v copy -c:a copy $temp_ts_filename
+ffmpeg -y -i $temp_ts_filename -acodec copy -vcodec copy $temp_mp4_filename
+
+# remove temp file
+rm -rf $temp_ts_filename
+
+# # split video
+for i in $(seq 0 12)
 do
-	let t=$[var*5]
-	ffmpeg -ss 00:$t:00.000 -i out.mp4 -t 00:05:00.000 -c:v copy -c:a copy out$var.mp4
+	start_time=$[i*split_video_minuts*60]
+	ffmpeg -y -ss $start_time -i $temp_mp4_filename -t $[split_video_minuts*60] -c:v copy -c:a copy out_$i.mp4
 done
+
+# remove temp file
+rm -rf $temp_mp4_filename
